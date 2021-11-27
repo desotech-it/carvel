@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: vmug2021
+  name: vmug2021
+  namespace: vmug2021
+spec:
+  selector:
+    matchLabels:
+      app: vmug2021
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: vmug2021
+    spec:
+      containers:
+      - image: r.deso.tech/whoami/whoami
+        name: whoami
+        resources: {}
+        env:
+        - name: NAME_APPLICATION
+          value: phippy
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: vmug2021
+  name: vmug2021
+  namespace: vmug2021
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: vmug2021
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vmug2021
+spec: {}
+status: {}
