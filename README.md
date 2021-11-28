@@ -5,15 +5,15 @@ In this example you can understand how to use a full integration of CARVEL Tools
 
 We should install Carvel Tools.
 
-```
+```bash
 sudo -i
 ```
 
-```
+```bash
 curl -L https://carvel.dev/install.sh | bash
 ```
 
-```
+```bash
 exit
 ```
 
@@ -30,25 +30,23 @@ When passing an environment variable to the container `whoami` we can obtain dif
 
 Sync Repo for this workshop:
 
-```
+```bash
 cd ~
 
 git clone https://github.com/desotech-it/carvel.git
-```
 
-```
 cd carvel
 ```
 
 Understand the yaml file:
 
-```
+```bash
 cat 01/whoami-app.yaml
 ```
 
 Usually a Kubernetes Developer deploy an application using `kubectl` command:
 
-```
+```bash
 kubectl apply -n vmug2021 -f 01/whoami-app.yaml
 ```
 
@@ -62,7 +60,7 @@ This command could produce an error, because in the yaml file the creation of `n
 
 Running again the same command:
 
-```
+```bash
 kubectl apply -n vmug2021 -f 01/whoami-app.yaml
 ```
 
@@ -76,7 +74,7 @@ Now also created the deployment and service:
 
 Also create some other object.
 
-```
+```bash
 kubectl get endpoints -n vmug2021 vmug2021
 ```
 
@@ -89,7 +87,7 @@ We did't create endpoint directly. Usually, when we works with custom CRD, we ne
 
 Now delete this application.
 
-```
+```bash
 kubectl delete -f 01/whoami-app.yaml
 ```
 
@@ -103,7 +101,7 @@ kubectl delete -f 01/whoami-app.yaml
 
 We try to use a different command `kapp` for deploy the same application:
 
-```
+```bash
 kapp deploy -a vmug-application -f 01/whoami-app.yaml
 ```
 
@@ -127,37 +125,37 @@ When you run application you will see result of what will happen inside your kub
 
 You can accept with `y`:
 
-```
-12:33:45PM: ---- applying 1 changes [0/3 done] ----
-12:33:45PM: create namespace/vmug2021 (v1) cluster
-12:33:45PM: ---- waiting on 1 changes [0/3 done] ----
-12:33:45PM: ok: reconcile namespace/vmug2021 (v1) cluster
-12:33:45PM: ---- applying 2 changes [1/3 done] ----
-12:33:45PM: create deployment/vmug2021 (apps/v1) namespace: vmug2021
-12:33:45PM: create service/vmug2021 (v1) namespace: vmug2021
-12:33:45PM: ---- waiting on 2 changes [1/3 done] ----
-12:33:45PM: ok: reconcile service/vmug2021 (v1) namespace: vmug2021
-12:33:45PM: ongoing: reconcile deployment/vmug2021 (apps/v1) namespace: vmug2021
-12:33:45PM:  ^ Waiting for generation 2 to be observed
-12:33:45PM:  L ok: waiting on replicaset/vmug2021-845db75bb (apps/v1) namespace: vmug2021
-12:33:45PM:  L ongoing: waiting on pod/vmug2021-845db75bb-cqzmj (v1) namespace: vmug2021
-12:33:45PM:     ^ Pending
-12:33:45PM: ---- waiting on 1 changes [2/3 done] ----
-12:33:45PM: ongoing: reconcile deployment/vmug2021 (apps/v1) namespace: vmug2021
-12:33:45PM:  ^ Waiting for 1 unavailable replicas
-12:33:45PM:  L ok: waiting on replicaset/vmug2021-845db75bb (apps/v1) namespace: vmug2021
-12:33:45PM:  L ongoing: waiting on pod/vmug2021-845db75bb-cqzmj (v1) namespace: vmug2021
-12:33:45PM:     ^ Pending: ContainerCreating
-12:33:51PM: ok: reconcile deployment/vmug2021 (apps/v1) namespace: vmug2021
-12:33:51PM: ---- applying complete [3/3 done] ----
-12:33:51PM: ---- waiting complete [3/3 done] ----
-
-Succeeded
-```
+> ```
+> 12:33:45PM: ---- applying 1 changes [0/3 done] ----
+> 12:33:45PM: create namespace/vmug2021 (v1) cluster
+> 12:33:45PM: ---- waiting on 1 changes [0/3 done] ----
+> 12:33:45PM: ok: reconcile namespace/vmug2021 (v1) cluster
+> 12:33:45PM: ---- applying 2 changes [1/3 done] ----
+> 12:33:45PM: create deployment/vmug2021 (apps/v1) namespace: vmug2021
+> 12:33:45PM: create service/vmug2021 (v1) namespace: vmug2021
+> 12:33:45PM: ---- waiting on 2 changes [1/3 done] ----
+> 12:33:45PM: ok: reconcile service/vmug2021 (v1) namespace: vmug2021
+> 12:33:45PM: ongoing: reconcile deployment/vmug2021 (apps/v1) namespace: vmug2021
+> 12:33:45PM:  ^ Waiting for generation 2 to be observed
+> 12:33:45PM:  L ok: waiting on replicaset/vmug2021-845db75bb (apps/v1) namespace: vmug2021
+> 12:33:45PM:  L ongoing: waiting on pod/vmug2021-845db75bb-cqzmj (v1) namespace: vmug2021
+> 12:33:45PM:     ^ Pending
+> 12:33:45PM: ---- waiting on 1 changes [2/3 done] ----
+> 12:33:45PM: ongoing: reconcile deployment/vmug2021 (apps/v1) namespace: vmug2021
+> 12:33:45PM:  ^ Waiting for 1 unavailable replicas
+> 12:33:45PM:  L ok: waiting on replicaset/vmug2021-845db75bb (apps/v1) namespace: vmug2021
+> 12:33:45PM:  L ongoing: waiting on pod/vmug2021-845db75bb-cqzmj (v1) namespace: vmug2021
+> 12:33:45PM:     ^ Pending: ContainerCreating
+> 12:33:51PM: ok: reconcile deployment/vmug2021 (apps/v1) namespace: vmug2021
+> 12:33:51PM: ---- applying complete [3/3 done] ----
+> 12:33:51PM: ---- waiting complete [3/3 done] ----
+>
+> Succeeded
+> ```
 
 You will obtain a `reconcile` information about all objects created. Using kapp you observe what happen and understand if the operation will be completed correctly.
 
-```
+```bash
 kapp inspect -a vmug-application --tree
 ```
 
@@ -186,7 +184,7 @@ kapp inspect -a vmug-application --tree
 As you can see Cluster created some extra kind: `Endpoints`, `EndpointSlice`, `ReplicaSet` and `Pod`. `kapp` track all object created.
 
 
-```
+```bash
 kapp ls
 ```
 
@@ -208,7 +206,7 @@ kapp ls
 
 You can read logs of the container with a simple command:
 
-```
+```bash
 kapp logs -f -a vmug-application
 ```
 
@@ -242,11 +240,11 @@ kubectl port-forward -n vmug2021 svc/vmug2021 8080:80
 
 Open another terminal or browser and `curl` on `localhost` on the port `8080` to:
 
-```
+```bash
 curl localhost:8080
 ```
 
-> ```
+> ```bash
 > @@@@@@@@@@@LtC@@@@@0tf8@@@@@@@@@@@@@@@@@@@@@@
 > @@@@@@@88@0ii;G@8@0i;;C@@@@@@@@@@@@@@@@@@@@@@
 > @@@@@8LLfLCtfLLLLfffftCGCLL0@@@@@@@@@@@@@@@@@
@@ -285,7 +283,7 @@ curl localhost:8080
 
 Now kill the pod:
 
-```
+```bash
 kubectl delete pod -n vmug2021 -l app=vmug2021 --grace-period 0
 ```
 
@@ -295,13 +293,13 @@ kubectl delete pod -n vmug2021 -l app=vmug2021 --grace-period 0
 
 And run `curl` again:
 
-```
+```bash
 curl localhost:8080
 ```
 
-```
-curl: (52) Empty reply from server
-```
+> ```
+> curl: (52) Empty reply from server
+> ```
 
 You need to restart again the `kubectl port-forward` command.
 
@@ -320,7 +318,7 @@ This tools permit to interact with Network to make Kubernetes services and pods 
 
 We have a `ClusterIP` service `vmug2021`:
 
-```
+```bash
 kubectl get svc vmug2021 -n vmug2021
 ```
 
@@ -331,7 +329,7 @@ kubectl get svc vmug2021 -n vmug2021
 
 You don't have any record in your dns resolution:
 
-```
+```bash
 dig vmug2021.vmug2021.svc.cluster.local +short
 ```
 
@@ -353,7 +351,7 @@ sudo -E kwt net start
 > 11:46:56AM: info: dns.DomainsMux: Registering cluster.local.->kube-dns
 > ```
 
-```
+```bash
 dig vmug2021.vmug2021.svc.cluster.local +short
 ```
 
@@ -365,7 +363,7 @@ You will obtain the same IP of ClusterIP `vmug2021`
 
 Now you have correct resolution, running `curl` you will obtain output from pod:
 
-```
+```bash
 curl http://vmug2021.vmug2021.svc.cluster.local
 ```
 
@@ -410,7 +408,7 @@ You can see the output of your container:
 
 Kill the pod again:
 
-```
+```bash
 kubectl delete pod -n vmug2021 -l app=vmug2021 --grace-period 0
 ```
 
@@ -420,7 +418,7 @@ kubectl delete pod -n vmug2021 -l app=vmug2021 --grace-period 0
 
 Doing `curl` again you will obtain result without restart the command `kwt`.
 
-```
+```bash
 curl http://vmug2021.vmug2021.svc.cluster.local
 ```
 
@@ -428,34 +426,34 @@ curl http://vmug2021.vmug2021.svc.cluster.local
 
 You can also update application using kapp.
 
-```
+```bash
 cd ~/carvel/
 diff 01/whoami-app.yaml 02/whoami-app.yaml
 ```
 
-```
-24c24
-<           value: phippy
----
->           value: captainkube
-```
+>```
+>24c24
+><           value: phippy
+>---
+>>           value: captainkube
+>```
 
 In this file we only changed the value of Environment Variable `NAME_APPLICATION`
 
 
-```
+```bash
 cat 02/whoami-app.yaml | grep NAME -a1
 ```
 
-```yaml
-        env:
-        - name: NAME_APPLICATION
-          value: captainkube
-```
+> ```yaml
+>         env:
+>         - name: NAME_APPLICATION
+>           value: captainkube
+> ```
 
 Check the changes with `kapp`
 
-```
+```bash
 kapp deploy -a vmug-application -f 02/whoami-app.yaml --diff-changes
 ```
 
@@ -503,6 +501,40 @@ Write and confirm with `y` to apply the updated application:
 > ```
 
 
+Curl again
+
+```bash
+curl http://vmug2021.vmug2021.svc.cluster.local
+```
+
+> ```bash
+> @@@@@@@@@@@@@@@@@@@0GGG08@@@@@@@@@@@@@@@@@@@@
+> @@@@@@@@@@@@@@@@G1:.   .,;L@@@@@@@@@@@@@@@@@@
+> @@@@@@@@@@@@@@@L. . :t1... ;@@@@@@@@@@@@@@@@@
+> @@@@@@@@@@@@@@@1 ,.t0i:..,..0@@@@@@@@@@@@@@@@
+> @@@@@@@@@@@@@@@@i..G8fL,...C@@@@@@@@@@@@@@@@@
+> @@@@@@@@@@@@@@CCG,..;1i,..t0C8@@@@@@@@@@@@@@@
+> @@@@@@@@@8LCCL. .....  ....  1GCCG@@@@@@@@@@@
+> @@@@@@@@@8fffLL1;:,,,,,,,,:itLfffG@@@@@@@@@@@
+> @@@@@@@@@@Cff11fLLfffffffLLLt1fLf8@@@@@@@@@@@
+> @@@@@@@@@@Gff,..:1fLfLLLLt;...tLL@@@@@@@@@@@@
+> @@@@@@@@@@CfL1.Li.,tLLLf:.;C:;LfL@@@@@@@@@@@@
+> @@@@@@@@@@LfL1,GC,,ft:if:.L0:;Lff0@@@@@@@@@@@
+> @@@@@@@@@8fffLtii1ft.  iL1ii1LfLfC@@@@@@@@@@@
+> @@@@@@@@@0fLffLLLLLft;1ffLLLLffLfC@@@@@@@@@@@
+> @@@@@@@@@GffffffffffLLLffffffffffL@@@@@@@@@@@
+> @@@@@@@@@LfffLfffffffffffffffLffLf0@@@@@@@@@@
+> @@@@@@@@0fLffffLffffffffffffffffLfL@@@@@@@@@@
+> @@@@@@@@CfLLfffffffffffffffffffLLLf8@@@@@@@@@
+> @@@@@@@@0fffffLfffffffffffffffftffL@@@@@@@@@@
+> @@@@@@@@@CtfffffffffffffffffffLfft8@@@@@@@@@@
+> @@@@@@@@@CfLffffffffffffffffffffLf8@@@@@@@@@@
+> @@@@@@@@@GfLLLffffffffffffffffLLfL@@@@@@@@@@@
+> @@@@@@@@@@GfffffffLLLLLLLLffffffL8@@@@@@@@@@@
+> @@@@@@@@@@@8CLffttttttttttttffLG@@@@@@@@@@@@@
+> @@@@@@@@@@@@@@@8800GGGGG00088@@@@@@@@@@@@@@@@
+> ```
+
 ## ytt
 
 ### ytt - Data Values
@@ -513,14 +545,14 @@ In ytt exist the concept of Data values
 
 Data values provide a way to inject input data into a template. If you think about a `ytt` template as a function, then `data values` are the varying parameters.
 
-```
+```bash
 cd ~/carvel/
 ```
 
 We start from a file with some
 
 
-```
+```bash
 cat 03/whoami-app.yaml
 ```
 
@@ -589,7 +621,7 @@ application_name: captain_kube
 
 Try to run `ytt` for understand the final result
 
-```
+```bash
 ytt -f 03/
 ```
 
@@ -631,15 +663,28 @@ ytt -f 03/
 We can also overwrite information overwriting the information of the `values.yaml`:
 
 ```bash
-ytt -f 03/ -v application_name=goodie
+ytt -f 03/ -v application_name=goldie
 ```
 
 > ```yaml
 > . . .
 >         env:
 >         - name: APPLICATION_NAME
->           value: goodie
+>           value: goldie
 > ```
+
+Apply the configuration with goldie:
+
+```bash
+kapp deploy -a vmug-application -c -f <(ytt -f 03/ -v application_name=goldie)
+```
+
+Curl again
+
+```bash
+curl http://vmug2021.vmug2021.svc.cluster.local
+```
+
 
 ### Use kapp together with ytt
 
@@ -830,7 +875,7 @@ We will build and upload image on remote registry.
 
 We should login on registry for push the image:
 
-```
+```bash
 docker login -u vmug2021 r.deso.tech
 ```
 
@@ -878,14 +923,14 @@ You can insert `y` and press `Enter`
 
 Open your application
 
-```
+```bash
 curl http://vmug2021.vmug2021.svc.cluster.local
 ```
 
 ### Update the code and build again
 
 
-```
+```bash
 vi ~/carvel/app.py
 ```
 
@@ -906,7 +951,9 @@ Build, upload and apply again:
 kapp deploy -a vmug-application -c -f <(ytt -f 06/ -v push_images_repo=r.deso.tech/vmug2021/vmug-application | kbld -f-)
 ```
 
-```
+Curl the new application created
+
+```bash
 curl http://vmug2021.vmug2021.svc.cluster.local
 ```
 
@@ -952,7 +999,7 @@ kapp delete -a vmug-application
 ## Remove kwt
 You can kill the process `kwt` with `CTRL-C`
 
-```
+```bash
 sudo pkill -SIGINT kwt
 ```
 
@@ -963,7 +1010,7 @@ sudo pkill -SIGINT kwt
 > ```
 
 
-```
+```bash
 kubectl get pod
 ```
 
@@ -976,7 +1023,7 @@ You still to see the kwt pod.
 
 We will cleanup it
 
-```
+```bash
 sudo -E kwt net clean-up
 ```
 
@@ -984,7 +1031,7 @@ sudo -E kwt net clean-up
 > Succeeded
 > ```
 
-```
+```bash
 kubectl get pod
 ```
 
