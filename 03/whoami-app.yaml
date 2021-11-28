@@ -34,3 +34,10 @@ spec:
         env:
         - name: APPLICATION_NAME
           value: #@ data.values.application_name
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vmug2021
+spec: {}
+status: {}
