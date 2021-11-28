@@ -1,7 +1,6 @@
 # carvel
 Carvel for VMUG 2021
 
-
 In this example you can understand how to use a full integration of CARVEL Tools.
 
 We should install Carvel Tools.
@@ -933,6 +932,44 @@ Open your application
 ```
 curl http://vmug2021.vmug2021.svc.cluster.local
 ```
+
+### Remove application
+
+With `kapp` you can remove application and clean your kubernetes environment.
+
+```bash
+kapp delete -a vmug-application
+```
+
+> ```
+> Target cluster 'https://10.10.180.21:6443' (nodes: master01, 4+)
+>
+> Changes
+>
+> Namespace  Name                       Kind           Conds.  Age  Op      Op st.  Wait to  Rs  Ri
+> (cluster)  vmug2021                   Namespace      -       22h  delete  -       delete   ok  -
+> vmug2021   test                       Endpoints      -       5m   -       -       delete   ok  -
+> ^          test                       Service        -       5m   -       -       delete   ok  -
+> ^          test-5ld7w                 EndpointSlice  -       5m   -       -       delete   ok  -
+> ^          vmug2021                   Deployment     2/2 t   22h  delete  -       delete   ok  -
+> ^          vmug2021                   Endpoints      -       22h  -       -       delete   ok  -
+> ^          vmug2021                   Service        -       22h  delete  -       delete   ok  -
+> ^          vmug2021-58f64df977        ReplicaSet     -       54m  -       -       delete   ok  -
+> ^          vmug2021-644c5cf6f6        ReplicaSet     -       2m   -       -       delete   ok  -
+> ^          vmug2021-644c5cf6f6-dq47h  Pod            4/4 t   2m   -       -       delete   ok  -
+> ^          vmug2021-644c5cf6f6-x89jv  Pod            4/4 t   2m   -       -       delete   ok  -
+> ^          vmug2021-6ff748c68d        ReplicaSet     -       1h   -       -       delete   ok  -
+> ^          vmug2021-7564b87db         ReplicaSet     -       16m  -       -       delete   ok  -
+> ^          vmug2021-7f5d8dd7dc        ReplicaSet     -       21h  -       -       delete   ok  -
+> ^          vmug2021-845db75bb         ReplicaSet     -       22h  -       -       delete   ok  -
+> ^          vmug2021-bb69c9c97         ReplicaSet     -       27m  -       -       delete   ok  -
+> ^          vmug2021-pfzq7             EndpointSlice  -       22h  -       -       delete   ok  -
+>
+> Op:      0 create, 3 delete, 0 update, 14 noop
+> Wait to: 0 reconcile, 17 delete, 0 noop
+>
+> Continue? [yN]:
+> ```
 
 ## Remove kwt
 You can kill the process `kwt` with `CTRL-C`
