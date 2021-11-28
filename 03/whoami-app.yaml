@@ -1,6 +1,6 @@
 #@ load("@ytt:data", "data")
 
-#@ def vmug-labels():
+#@ def vmuglabels():
 app: "vmug-application"
 #@ end
 
@@ -14,7 +14,7 @@ spec:
   ports:
   - port: #@ data.values.svc_port
     targetPort: #@ data.values.app_port
-  selector: #@ vmug-labels()
+  selector: #@ vmuglabels()
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -23,10 +23,10 @@ metadata:
   name: vmug-application
 spec:
   selector:
-    matchvmug-labels: #@ vmug-labels()
+    matchvmuglabels: #@ vmuglabels()
   template:
     metadata:
-      vmug-labels: #@ vmug-labels()
+      vmuglabels: #@ vmuglabels()
     spec:
       containers:
       - name: vmug-application
