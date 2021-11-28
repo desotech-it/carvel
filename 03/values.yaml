@@ -2,4 +2,4 @@
 ---
 svc_port: 80
 app_port: 80
-application_name: captain_kube
+application_name: captainkube

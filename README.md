@@ -616,7 +616,7 @@ cat 03/values.yaml
 ---
 svc_port: 80
 app_port: 80
-application_name: captain_kube
+application_name: captainkube
 ```
 
 Try to run `ytt` for understand the final result
@@ -657,7 +657,7 @@ ytt -f 03/
 >         image: r.deso.tech/whoami/whoami:latest
 >         env:
 >         - name: APPLICATION_NAME
->           value: captain_kube
+>           value: captainkube
 > ```
 
 We can also overwrite information overwriting the information of the `values.yaml`:
@@ -760,7 +760,7 @@ ytt -f 04/
 
 > ```yaml
 > . . .
->           value: captain_kube
+>           value: captainkube
 >   replicas: 2
 > ---
 > apiVersion: v1
@@ -896,7 +896,7 @@ Now the image is correctly tagged:
 
 > ```
 > . . .
-> 120,129             value: captain_kube
+> 120,129             value: captainkube
 > 121     -         image: r.deso.tech/whoami/whoami:latest
 >     130 +         image: r.deso.tech/vmug2021/vmug-application@sha256:84bc6be5c4eb64733e9c960155dfd8ad6779f36a72cdfc29b1de446151ee2d75
 > . . .
