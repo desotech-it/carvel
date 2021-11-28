@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: vmug2021
-        image: r.deso.tech/whoami/whoami:latest
+        image: r.deso.tech/vmug2021/vmug-application
         env:
         - name: APPLICATION_NAME
           value: #@ data.values.application_name

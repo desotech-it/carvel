@@ -793,14 +793,12 @@ Build an `OCI` container can be done using `docker`. Carvel introduce the possib
 
 
 
-cd ~
-git clone https://github.com/desotech-it/whoami.git
 
 
 we have the same file created above, we just added a file `build.yaml`
 
 ```bash
-cat ~/carvel/05/build.yaml
+cat 05/build.yaml
 ```
 
 > ```yaml
@@ -812,9 +810,7 @@ cat ~/carvel/05/build.yaml
 > ```
 
 ```bash
-cd ~/whoami
-
-kapp deploy -a vmug-application -c -f <(ytt -f ~/carvel/05/ | kbld -f-)
+kapp deploy -a vmug-application -c -f <(ytt -f 05/ | kbld -f-)
 ```
 
 ```
