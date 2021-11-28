@@ -1,0 +1,15 @@
+#@ load("@ytt:data", "data")
+
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+sources:
+- image: r.deso.tech/vmug2021/vmug-application
+  path: .
+
+#@ if/end data.values.push_images_repo:
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+destinations:
+- image: r.deso.tech/vmug2021/vmug-application
+  newImage: #@ data.values.push_images_repo

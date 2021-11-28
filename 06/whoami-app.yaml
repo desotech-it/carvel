@@ -1,0 +1,43 @@
+#@ load("@ytt:data", "data")
+
+#@ def vmuglabels():
+app: "vmug2021"
+#@ end
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: vmug2021
+  name: vmug2021
+spec:
+  ports:
+  - port: #@ data.values.svc_port
+    targetPort: #@ data.values.app_port
+  selector: #@ vmuglabels()
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: vmug2021
+  name: vmug2021
+spec:
+  selector:
+    matchLabels: #@ vmuglabels()
+  template:
+    metadata:
+      labels: #@ vmuglabels()
+    spec:
+      containers:
+      - name: vmug2021
+        image: r.deso.tech/vmug2021/vmug-application
+        env:
+        - name: APPLICATION_NAME
+          value: #@ data.values.application_name
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vmug2021
+spec: {}
+status: {}

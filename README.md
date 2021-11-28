@@ -813,44 +813,91 @@ cat 05/build.yaml
 kapp deploy -a vmug-application -c -f <(ytt -f 05/ | kbld -f-)
 ```
 
-```
-Target cluster 'https://10.10.180.21:6443' (nodes: master01, 4+)
-resolve | final: r.deso.tech/whoami/whoami:latest -> r.deso.tech/whoami/whoami@sha256:bc210554e9eae95d75f08cc498a8618dc083f89a6a81744bfc3380f8023403c4
-
-@@ update deployment/vmug2021 (apps/v1) namespace: vmug2021 @@
-  ...
-  4,  4       deployment.kubernetes.io/revision: "3"
-      5 +     kbld.k14s.io/images: |
-      6 +       - origins:
-      7 +         - resolved:
-      8 +             tag: latest
-      9 +             url: r.deso.tech/whoami/whoami:latest
-     10 +         url: r.deso.tech/whoami/whoami@sha256:bc210554e9eae95d75f08cc498a8618dc083f89a6a81744bfc3380f8023403c4
-  5, 11     creationTimestamp: "2021-11-27T11:33:45Z"
-  6, 12     generation: 8
-  ...
-120,126             value: captain_kube
-121     -         image: r.deso.tech/whoami/whoami:latest
-    127 +         image: r.deso.tech/whoami/whoami@sha256:bc210554e9eae95d75f08cc498a8618dc083f89a6a81744bfc3380f8023403c4
-122,128           name: vmug2021
-123,129   status:
-
-Changes
-
-Namespace  Name      Kind        Conds.  Age  Op      Op st.  Wait to    Rs  Ri
-vmug2021   vmug2021  Deployment  2/2 t   21h  update  -       reconcile  ok  -
-
-Op:      0 create, 0 delete, 1 update, 0 noop
-Wait to: 1 reconcile, 0 delete, 0 noop
-
-Continue? [yN]:
-```
+> ```
+> Target cluster 'https://10.10.180.21:6443' (nodes: master01, 4+)
+> resolve | final: r.deso.tech/whoami/whoami:latest -> r.deso.tech/whoami/whoami@sha256:bc210554e9eae95d75f08cc498a8618dc083f89a6a81744bfc3380f8023403c4
+>
+> @@ update deployment/vmug2021 (apps/v1) namespace: vmug2021 @@
+>   ...
+>   4,  4       deployment.kubernetes.io/revision: "3"
+>       5 +     kbld.k14s.io/images: |
+>       6 +       - origins:
+>       7 +         - resolved:
+>       8 +             tag: latest
+>       9 +             url: r.deso.tech/whoami/whoami:latest
+>      10 +         url: r.deso.tech/whoami/whoami@sha256:bc210554e9eae95d75f08cc498a8618dc083f89a6a81744bfc3380f8023403c4
+>   5, 11     creationTimestamp: "2021-11-27T11:33:45Z"
+>   6, 12     generation: 8
+>   ...
+> 120,126             value: captain_kube
+> 121     -         image: r.deso.tech/whoami/whoami:latest
+>     127 +         image: r.deso.tech/whoami/whoami@sha256:bc210554e9eae95d75f08cc498a8618dc083f89a6a81744bfc3380f8023403c4
+> 122,128           name: vmug2021
+> 123,129   status:
+>
+> Changes
+>
+> Namespace  Name      Kind        Conds.  Age  Op      Op st.  Wait to    Rs  Ri
+> vmug2021   vmug2021  Deployment  2/2 t   21h  update  -       reconcile  ok  -
+>
+> Op:      0 create, 0 delete, 1 update, 0 noop
+> Wait to: 1 reconcile, 0 delete, 0 noop
+>
+> Continue? [yN]:
+> ```
 
 Something special will happen, the image will be updated with the updated one.
 
+The Image has built and the Image updated:
 
 
+> ```
+> . . .
+> r.deso.tech/vmug2021/vmug-application | Successfully built ebb0270b705e
+> r.deso.tech/vmug2021/vmug-application | Successfully tagged kbld:rand-1638092430386377525-3817113615958-r-deso-tech-vmug2021-vmug-application
+> r.deso.tech/vmug2021/vmug-application | Untagged: kbld:rand-1638092430386377525-3817113615958-r-deso-tech-vmug2021-vmug-application
+> r.deso.tech/vmug2021/vmug-application | finished build (using Docker)
+> . . .
+> 128     -         image: r.deso.tech/whoami/whoami@sha256:bc210554e9eae95d75f08cc498a8618dc083f89a6a81744bfc3380f8023403c4
+>     131 +         image: kbld:r-deso-tech-vmug2021-vmug-application-sha256-ebb0270b705e1ace2283cc3ee784b180a730a55d2f8bde08bb56456478705c40
+> . . .
+> Changes
+>
+> Namespace  Name      Kind        Conds.  Age  Op      Op st.  Wait to    Rs  Ri
+> vmug2021   vmug2021  Deployment  2/2 t   22h  update  -       reconcile  ok  -
+>
+> Op:      0 create, 0 delete, 1 update, 0 noop
+> Wait to: 1 reconcile, 0 delete, 0 noop
+>
+> Continue? [yN]: N
+> ```
 
+Since we are working on a multinode kubernetes cluster, if you apply, you will obtain error because the image is locally, so please press `Enter` or `N`
+
+> ```
+> kapp: Error: Stopped
+> ```
+
+We will build and upload image on remote registry:
+
+We should login on registry for push the image:
+
+```
+docker login -u vmug2021 r.deso.tech
+```
+
+> ```
+> Password:
+> WARNING! Your password will be stored unencrypted in /home/hermedia/.docker/config.json.
+> Configure a credential helper to remove this warning. See
+> https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+>
+> Login Succeeded
+> ```
+
+```bash
+kapp deploy -a vmug-application -c -f <(ytt -f 05/ -v push_images_repo=r.deso.tech/vmug2021/vmug-application | kbld -f-)
+```
 
 
 
