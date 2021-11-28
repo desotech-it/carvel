@@ -517,7 +517,7 @@ Write and confirm with `y` to apply the updated application:
 
 ## ytt
 
-### Data Values
+### ytt - Data Values
 
 Generally the file yaml used for deploy application are almost the same. Working with template can help us to write less and reuse the same files for multiple deployments.
 
@@ -665,12 +665,63 @@ I'm applying the modified configuration.
 
 ```
 . . .
+Changes
 
+Namespace  Name      Kind        Conds.  Age  Op      Op st.  Wait to    Rs  Ri
+vmug2021   vmug2021  Deployment  2/2 t   21h  update  -       reconcile  ok  -
+^          vmug2021  Service     -       21h  update  -       reconcile  ok  -
+
+Op:      0 create, 0 delete, 2 update, 0 noop
+Wait to: 2 reconcile, 0 delete, 0 noop
+
+Continue? [yN]:
 ```
 
+Update it with `y`
+
+> ```
+> 9:46:43AM: ---- applying 2 changes [0/2 done] ----
+> 9:46:43AM: update deployment/vmug2021 (apps/v1) namespace: vmug2021
+> 9:46:43AM: update service/vmug2021 (v1) namespace: vmug2021
+> 9:46:43AM: ---- waiting on 2 changes [0/2 done] ----
+> 9:46:43AM: ok: reconcile service/vmug2021 (v1) namespace: vmug2021
+> 9:46:43AM: ongoing: reconcile deployment/vmug2021 (apps/v1) namespace: vmug2021
+> 9:46:43AM:  ^ Waiting for generation 6 to be observed
+> 9:46:43AM:  L ok: waiting on replicaset/vmug2021-845db75bb (apps/v1) namespace: vmug2021
+> 9:46:43AM:  L ok: waiting on replicaset/vmug2021-7f5d8dd7dc (apps/v1) namespace: vmug2021
+> 9:46:43AM:  L ok: waiting on replicaset/vmug2021-6ff748c68d (apps/v1) namespace: vmug2021
+> 9:46:43AM:  L ok: waiting on pod/vmug2021-7f5d8dd7dc-czf7j (v1) namespace: vmug2021
+> 9:46:43AM:  L ongoing: waiting on pod/vmug2021-6ff748c68d-fvf68 (v1) namespace: vmug2021
+> 9:46:43AM:     ^ Pending
+> 9:46:43AM: ---- waiting on 1 changes [1/2 done] ----
+> 9:46:43AM: ongoing: reconcile deployment/vmug2021 (apps/v1) namespace: vmug2021
+> 9:46:43AM:  ^ Waiting for 1 unavailable replicas
+> 9:46:43AM:  L ok: waiting on replicaset/vmug2021-845db75bb (apps/v1) namespace: vmug2021
+> 9:46:43AM:  L ok: waiting on replicaset/vmug2021-7f5d8dd7dc (apps/v1) namespace: vmug2021
+> 9:46:43AM:  L ok: waiting on replicaset/vmug2021-6ff748c68d (apps/v1) namespace: vmug2021
+> 9:46:43AM:  L ok: waiting on pod/vmug2021-7f5d8dd7dc-czf7j (v1) namespace: vmug2021
+> 9:46:43AM:  L ongoing: waiting on pod/vmug2021-6ff748c68d-fvf68 (v1) namespace: vmug2021
+> 9:46:43AM:     ^ Pending: ContainerCreating
+> 9:46:46AM: ok: reconcile deployment/vmug2021 (apps/v1) namespace: vmug2021
+> 9:46:46AM: ---- applying complete [2/2 done] ----
+> 9:46:46AM: ---- waiting complete [2/2 done] ----
+>
+> Succeeded
+> ```
 
 
 
+### ytt - Overlay
+
+Sometimes it makes more sense to patch some YAML rather than template it.
+
+For example, when:
+
+- the file should not be edited directly (e.g. from a third party);
+- the edit will apply to most or all documents;
+- the specific variable is less commonly configured.
+
+In our example we will update the `replicas` of our Deployment.
 
 
 
