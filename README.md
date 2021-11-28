@@ -723,7 +723,85 @@ For example, when:
 
 In our example we will update the `replicas` of our Deployment.
 
+```
+ytt -f 03/
+```
 
+```yaml
+. . .
+          value: captain_kube
+  replicas: 2
+---
+apiVersion: v1
+. . .
+```
+
+You will see the value of `replicas` set to `2`.
+
+
+```bash
+kapp deploy -a vmug-application -c -f <(ytt -f 04/)
+```
+
+> ```
+> Target cluster 'https://10.10.180.21:6443' (nodes: master01, 4+)
+>
+> @@ update deployment/vmug2021 (apps/v1) namespace: vmug2021 @@
+>   ...
+> 104,104   spec:
+>     105 +   replicas: 2
+> 105,106     selector:
+> 106,107       matchLabels:
+>
+> Changes
+>
+> Namespace  Name      Kind        Conds.  Age  Op      Op st.  Wait to    Rs  Ri
+> vmug2021   vmug2021  Deployment  2/2 t   21h  update  -       reconcile  ok  -
+>
+> Op:      0 create, 0 delete, 1 update, 0 noop
+> Wait to: 1 reconcile, 0 delete, 0 noop
+>
+> Continue? [yN]:
+> ```
+
+Apply it.
+
+> ```
+> 9:58:00AM: ---- applying 1 changes [0/1 done] ----
+> 9:58:01AM: update deployment/vmug2021 (apps/v1) namespace: vmug2021
+> 9:58:01AM: ---- waiting on 1 changes [0/1 done] ----
+> 9:58:01AM: ongoing: reconcile deployment/vmug2021 (apps/v1) namespace: vmug2021
+> 9:58:01AM:  ^ Waiting for generation 8 to be observed
+> 9:58:01AM:  L ok: waiting on replicaset/vmug2021-845db75bb (apps/v1) namespace: vmug2021
+> 9:58:01AM:  L ok: waiting on replicaset/vmug2021-7f5d8dd7dc (apps/v1) namespace: vmug2021
+> 9:58:01AM:  L ok: waiting on replicaset/vmug2021-6ff748c68d (apps/v1) namespace: vmug2021
+> 9:58:01AM:  L ongoing: waiting on pod/vmug2021-6ff748c68d-p9twc (v1) namespace: vmug2021
+> 9:58:01AM:     ^ Pending: ContainerCreating
+> 9:58:01AM:  L ok: waiting on pod/vmug2021-6ff748c68d-fvf68 (v1) namespace: vmug2021
+> 9:58:02AM: ok: reconcile deployment/vmug2021 (apps/v1) namespace: vmug2021
+> 9:58:02AM: ---- applying complete [1/1 done] ----
+> 9:58:02AM: ---- waiting complete [1/1 done] ----
+>
+> Succeeded
+> ```
+
+Extremely powerful and simple to be used.
+
+## kbld
+
+Build an `OCI` container can be done using `docker`. Carvel introduce the possibility to building images from source code using `kbld`
+
+
+
+cd ~
+git clone https://github.com/desotech-it/whoami.git
+
+
+we have the same file created above, we just added a file `build.yaml`
+
+```
+cat ~/carvel/05/build.yaml
+```
 
 
 
