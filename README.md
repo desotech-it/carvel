@@ -585,7 +585,21 @@ The `#@ def vmug-labels():` is a type of value that is defined directly in YAML.
 - `labels: #@ vmuglabels()`
 - `selector: #@ vmuglabels()`
 
-Try to run `ytt` for understand the result
+The file values.yaml contain the values of the variables specified above.
+
+```bash
+cat 03/values.yaml
+```
+
+```yaml
+#@data/values
+---
+svc_port: 80
+app_port: 80
+application_name: captain_kube
+```
+
+Try to run `ytt` for understand the final result
 
 ```
 ytt -f 03/
@@ -611,11 +625,11 @@ metadata:
   name: vmug-application
 spec:
   selector:
-    matchvmug-labels:
+    matchlabels:
       app: vmug-application
   template:
     metadata:
-      vmug-labels:
+      labels:
         app: vmug-application
     spec:
       containers:
@@ -626,7 +640,27 @@ spec:
           value: captain_kube
 ```
 
-You can see the file with the
+We can also overwrite information overwriting the information of the `values.yaml`:
+
+```bash
+ytt -f 03/ -v application_name=goodie
+```
+
+```yaml
+. . .
+        env:
+        - name: APPLICATION_NAME
+          value: goodie
+```
+
+### Use kapp together with ytt
+
+This tools can be used together for change and apply configuration directly on kubernetes.
+
+```bash
+kapp deploy -a vmug-application -c -f <(ytt -f 03/)
+```
+
 
 
 
