@@ -539,7 +539,7 @@ cat 03/whoami-app.yaml
 ```yaml
 #@ load("@ytt:data", "data")
 
-#@ def vmug-labels():
+#@ def vmuglabels():
 app: "vmug-application"
 #@ end
 
@@ -553,7 +553,7 @@ spec:
   ports:
   - port: #@ data.values.svc_port
     targetPort: #@ data.values.app_port
-  selector: #@ vmug-labels()
+  selector: #@ vmuglabels()
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -562,10 +562,10 @@ metadata:
   name: vmug-application
 spec:
   selector:
-    matchvmug-labels: #@ vmug-labels()
+    matchlabels: #@ vmuglabels()
   template:
     metadata:
-      vmug-labels: #@ vmug-labels()
+      labels: #@ vmuglabels()
     spec:
       containers:
       - name: vmug-application
@@ -580,8 +580,12 @@ In the first row of the file we are going to referencing a `data values` loading
 In the file you will see the referecing of variable using `#@ data.values.`.
 For example for change the `application_name`, in the last row we reference to `#@ data.values.application_name`
 
+The `#@ def vmug-labels():` is a type of value that is defined directly in YAML. This parameter is called YAMLFragment and return just the content values. For example in our case will return label: `app: "vmug-application"` in:
+- `matchlabels: #@ vmuglabels()`
+- `labels: #@ vmuglabels()`
+- `selector: #@ vmuglabels()`
 
-
+Try to run `ytt` for understand the result
 
 ```
 ytt -f 03/

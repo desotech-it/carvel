@@ -23,10 +23,10 @@ metadata:
   name: vmug-application
 spec:
   selector:
-    matchvmuglabels: #@ vmuglabels()
+    matchlabels: #@ vmuglabels()
   template:
     metadata:
-      vmuglabels: #@ vmuglabels()
+      labels: #@ vmuglabels()
     spec:
       containers:
       - name: vmug-application
