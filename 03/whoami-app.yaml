@@ -1,0 +1,36 @@
+#@ load("@ytt:data", "data")
+
+#@ def labels():
+app: "vmug-application"
+#@ end
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: vmug2021
+  name: vmug-application
+spec:
+  ports:
+  - port: #@ data.values.svc_port
+    targetPort: #@ data.values.app_port
+  selector: #@ labels()
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: vmug2021
+  name: vmug-application
+spec:
+  selector:
+    matchLabels: #@ labels()
+  template:
+    metadata:
+      labels: #@ labels()
+    spec:
+      containers:
+      - name: vmug-application
+        image: r.deso.tech/whoami/whoami:latest
+        env:
+        - name: APPLICATION_NAME
+          value: #@ data.values.application_name

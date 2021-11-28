@@ -41,6 +41,12 @@ git clone https://github.com/desotech-it/carvel.git
 cd carvel
 ```
 
+Understand the yaml file:
+
+```
+cat 01/whoami-app.yaml
+```
+
 Usually a Kubernetes Developer deploy an application using `kubectl` command:
 
 ```
@@ -429,11 +435,6 @@ Doing `curl` again you will obtain result without restart the command `kwt`.
 curl http://vmug2021.vmug2021.svc.cluster.local
 ```
 
-You can kill the process `kwt`
-
-```
-sudo killall kwt
-```
 
 ## kapp updates
 
@@ -441,6 +442,135 @@ You can also update application using kapp.
 
 ```
 cd ~/carvel/
+diff 01/whoami-app.yaml 02/whoami-app.yaml
 ```
 
-diff ~/carvel/01/whoami-app.yaml ~/carvel/02/whoami-app.yaml
+```
+24c24
+<           value: phippy
+---
+>           value: captainkube
+```
+
+In this file we only changed the value of Environment Variable `NAME_APPLICATION`
+
+
+```
+cat 02/whoami-app.yaml | grep NAME -a1
+```
+
+```yaml
+        env:
+        - name: NAME_APPLICATION
+          value: captainkube
+```
+
+Check the changes with `kapp`
+
+```
+kapp deploy -a vmug-application -f 02/whoami-app.yaml --diff-changes
+```
+
+> ```
+> 129,121           - name: NAME_APPLICATION
+> 130     -           value: phippy
+>     122 +           value: captainkube
+> . . .
+> Changes
+>
+> Namespace  Name      Kind        Conds.  Age  Op      Op st.  Wait to    Rs  Ri
+> vmug2021   vmug2021  Deployment  -       47m  update  -       reconcile  ok  -
+>
+> Op:      0 create, 0 delete, 1 update, 0 noop
+> Wait to: 1 reconcile, 0 delete, 0 noop
+>
+> Continue? [yN]:
+> ```
+
+Write and confirm with `y` to apply the updated application:
+
+> ```
+> 1:24:27PM: ---- applying 1 changes [0/1 done] ----
+> 1:24:27PM: update deployment/vmug2021 (apps/v1) namespace: vmug2021
+> 1:24:27PM: ---- waiting on 1 changes [0/1 done] ----
+> 1:24:27PM: ongoing: reconcile deployment/vmug2021 (apps/v1) namespace: vmug2021
+> 1:24:27PM:  ^ Waiting for generation 4 to be observed
+> 1:24:27PM:  L ok: waiting on replicaset/vmug2021-845db75bb (apps/v1) namespace: vmug2021
+> 1:24:27PM:  L ok: waiting on replicaset/vmug2021-7f5d8dd7dc (apps/v1) namespace: vmug2021
+> 1:24:27PM:  L ok: waiting on pod/vmug2021-845db75bb-2gzx8 (v1) namespace: vmug2021
+> 1:24:27PM:  L ongoing: waiting on pod/vmug2021-7f5d8dd7dc-czf7j (v1) namespace: vmug2021
+> 1:24:27PM:     ^ Pending
+> 1:24:28PM: ongoing: reconcile deployment/vmug2021 (apps/v1) namespace: vmug2021
+> 1:24:28PM:  ^ Waiting for 1 unavailable replicas
+> 1:24:28PM:  L ok: waiting on replicaset/vmug2021-845db75bb (apps/v1) namespace: vmug2021
+> 1:24:28PM:  L ok: waiting on replicaset/vmug2021-7f5d8dd7dc (apps/v1) namespace: vmug2021
+> 1:24:28PM:  L ok: waiting on pod/vmug2021-845db75bb-2gzx8 (v1) namespace: vmug2021
+> 1:24:28PM:  L ongoing: waiting on pod/vmug2021-7f5d8dd7dc-czf7j (v1) namespace: vmug2021
+> 1:24:28PM:     ^ Pending: ContainerCreating
+> 1:24:29PM: ok: reconcile deployment/vmug2021 (apps/v1) namespace: vmug2021
+> 1:24:29PM: ---- applying complete [1/1 done] ----
+> 1:24:29PM: ---- waiting complete [1/1 done] ----
+>
+> Succeeded
+> ```
+
+
+## ytt
+
+### Templating in yaml file.
+
+Generally the file yaml used for deploy application are almost the same. Working with template can help us to write less and reuse the same files for multiple deployments.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Remove kwt
+You can kill the process `kwt` with `CTRL-C`
+
+```
+sudo pkill -SIGINT kwt
+```
+
+
+```
+01:16:40PM: info: StartOptions: Shutting down
+
+Succeeded
+```
+
+```
+kubectl get pod
+```
+
+> ```
+> NAME      READY   STATUS    RESTARTS   AGE
+> kwt-net   1/1     Running   0          8s
+> ```
+
+
+```
+sudo -E kwt net clean-up
+```
+
+> ```
+> Succeeded
+> ```
+
+```
+kubectl get pod
+```
+
+> ```
+> No resources found in default namespace.
+> ```
