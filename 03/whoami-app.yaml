@@ -23,7 +23,7 @@ metadata:
   name: vmug2021
 spec:
   selector:
-    matchlabels: #@ vmuglabels()
+    matchLabels: #@ vmuglabels()
   template:
     metadata:
       labels: #@ vmuglabels()
