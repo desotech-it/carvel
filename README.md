@@ -799,9 +799,62 @@ git clone https://github.com/desotech-it/whoami.git
 
 we have the same file created above, we just added a file `build.yaml`
 
-```
+```bash
 cat ~/carvel/05/build.yaml
 ```
+
+> ```yaml
+> apiVersion: kbld.k14s.io/v1alpha1
+> kind: Config
+> sources:
+> - image: r.deso.tech/vmug2021/vmug-application
+> path: .
+> ```
+
+```bash
+cd ~/whoami
+
+kapp deploy -a vmug-application -c -f <(ytt -f ~/carvel/05/ | kbld -f-)
+```
+
+```
+Target cluster 'https://10.10.180.21:6443' (nodes: master01, 4+)
+resolve | final: r.deso.tech/whoami/whoami:latest -> r.deso.tech/whoami/whoami@sha256:bc210554e9eae95d75f08cc498a8618dc083f89a6a81744bfc3380f8023403c4
+
+@@ update deployment/vmug2021 (apps/v1) namespace: vmug2021 @@
+  ...
+  4,  4       deployment.kubernetes.io/revision: "3"
+      5 +     kbld.k14s.io/images: |
+      6 +       - origins:
+      7 +         - resolved:
+      8 +             tag: latest
+      9 +             url: r.deso.tech/whoami/whoami:latest
+     10 +         url: r.deso.tech/whoami/whoami@sha256:bc210554e9eae95d75f08cc498a8618dc083f89a6a81744bfc3380f8023403c4
+  5, 11     creationTimestamp: "2021-11-27T11:33:45Z"
+  6, 12     generation: 8
+  ...
+120,126             value: captain_kube
+121     -         image: r.deso.tech/whoami/whoami:latest
+    127 +         image: r.deso.tech/whoami/whoami@sha256:bc210554e9eae95d75f08cc498a8618dc083f89a6a81744bfc3380f8023403c4
+122,128           name: vmug2021
+123,129   status:
+
+Changes
+
+Namespace  Name      Kind        Conds.  Age  Op      Op st.  Wait to    Rs  Ri
+vmug2021   vmug2021  Deployment  2/2 t   21h  update  -       reconcile  ok  -
+
+Op:      0 create, 0 delete, 1 update, 0 noop
+Wait to: 1 reconcile, 0 delete, 0 noop
+
+Continue? [yN]:
+```
+
+Something special will happen, the image will be updated with the updated one.
+
+
+
+
 
 
 
