@@ -1,5 +1,5 @@
-# carvel
-Carvel for VMUG 2021
+# CARVEL.dev
+CARVEL.dev for VMUG 2021
 
 In this example you can understand how to use a full integration of CARVEL Tools.
 
@@ -418,22 +418,11 @@ kubectl delete pod -n vmug2021 -l app=vmug2021 --grace-period 0
 > pod "vmug2021-845db75bb-44r7q" deleted
 > ```
 
-Take note of the name of the pod and delete it.
-
-```
-kubectl delete pod vmug2021-d7cc4dd46-dws92
-```
-
-> ```
-> pod "vmug2021-d7cc4dd46-dws92" deleted
-> ```
-
 Doing `curl` again you will obtain result without restart the command `kwt`.
 
 ```
 curl http://vmug2021.vmug2021.svc.cluster.local
 ```
-
 
 ## kapp updates
 
@@ -535,44 +524,44 @@ We start from a file with some
 cat 03/whoami-app.yaml
 ```
 
-```yaml
-#@ load("@ytt:data", "data")
-
-#@ def vmuglabels():
-app: "vmug-application"
-#@ end
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  namespace: vmug2021
-  name: vmug-application
-spec:
-  ports:
-  - port: #@ data.values.svc_port
-    targetPort: #@ data.values.app_port
-  selector: #@ vmuglabels()
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  namespace: vmug2021
-  name: vmug-application
-spec:
-  selector:
-    matchlabels: #@ vmuglabels()
-  template:
-    metadata:
-      labels: #@ vmuglabels()
-    spec:
-      containers:
-      - name: vmug-application
-        image: r.deso.tech/whoami/whoami:latest
-        env:
-        - name: APPLICATION_NAME
-          value: #@ data.values.application_name
-```
+> ```yaml
+> #@ load("@ytt:data", "data")
+>
+> #@ def vmuglabels():
+> app: "vmug-application"
+> #@ end
+>
+> ---
+> apiVersion: v1
+> kind: Service
+> metadata:
+>   namespace: vmug2021
+>   name: vmug-application
+> spec:
+>   ports:
+>   - port: #@ data.values.svc_port
+>     targetPort: #@ data.values.app_port
+>   selector: #@ vmuglabels()
+> ---
+> apiVersion: apps/v1
+> kind: Deployment
+> metadata:
+>   namespace: vmug2021
+>   name: vmug-application
+> spec:
+>   selector:
+>     matchlabels: #@ vmuglabels()
+>   template:
+>     metadata:
+>       labels: #@ vmuglabels()
+>     spec:
+>       containers:
+>       - name: vmug-application
+>         image: r.deso.tech/whoami/whoami:latest
+>         env:
+>         - name: APPLICATION_NAME
+>           value: #@ data.values.application_name
+> ```
 
 In the first row of the file we are going to referencing a `data values` loading a `@ytt:data` module.
 
@@ -604,40 +593,40 @@ Try to run `ytt` for understand the final result
 ytt -f 03/
 ```
 
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  namespace: vmug2021
-  name: vmug-application
-spec:
-  ports:
-  - port: 80
-    targetPort: 80
-  selector:
-    app: vmug-application
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  namespace: vmug2021
-  name: vmug-application
-spec:
-  selector:
-    matchlabels:
-      app: vmug-application
-  template:
-    metadata:
-      labels:
-        app: vmug-application
-    spec:
-      containers:
-      - name: vmug-application
-        image: r.deso.tech/whoami/whoami:latest
-        env:
-        - name: APPLICATION_NAME
-          value: captain_kube
-```
+> ```yaml
+> apiVersion: v1
+> kind: Service
+> metadata:
+>   namespace: vmug2021
+>   name: vmug-application
+> spec:
+>   ports:
+>   - port: 80
+>     targetPort: 80
+>   selector:
+>     app: vmug-application
+> ---
+> apiVersion: apps/v1
+> kind: Deployment
+> metadata:
+>   namespace: vmug2021
+>   name: vmug-application
+> spec:
+>   selector:
+>     matchlabels:
+>       app: vmug-application
+>   template:
+>     metadata:
+>       labels:
+>         app: vmug-application
+>     spec:
+>       containers:
+>       - name: vmug-application
+>         image: r.deso.tech/whoami/whoami:latest
+>         env:
+>         - name: APPLICATION_NAME
+>           value: captain_kube
+> ```
 
 We can also overwrite information overwriting the information of the `values.yaml`:
 
@@ -645,12 +634,12 @@ We can also overwrite information overwriting the information of the `values.yam
 ytt -f 03/ -v application_name=goodie
 ```
 
-```yaml
-. . .
-        env:
-        - name: APPLICATION_NAME
-          value: goodie
-```
+> ```yaml
+> . . .
+>         env:
+>         - name: APPLICATION_NAME
+>           value: goodie
+> ```
 
 ### Use kapp together with ytt
 
@@ -660,21 +649,21 @@ This tools can be used together for change and apply configuration directly on k
 kapp deploy -a vmug-application -c -f <(ytt -f 03/)
 ```
 
-I'm applying the modified configuration.
+Apply the modified configuration.
 
-```
-. . .
-Changes
-
-Namespace  Name      Kind        Conds.  Age  Op      Op st.  Wait to    Rs  Ri
-vmug2021   vmug2021  Deployment  2/2 t   21h  update  -       reconcile  ok  -
-^          vmug2021  Service     -       21h  update  -       reconcile  ok  -
-
-Op:      0 create, 0 delete, 2 update, 0 noop
-Wait to: 2 reconcile, 0 delete, 0 noop
-
-Continue? [yN]:
-```
+> ```
+> . . .
+> Changes
+>
+> Namespace  Name      Kind        Conds.  Age  Op      Op st.  Wait to    Rs  Ri
+> vmug2021   vmug2021  Deployment  2/2 t   21h  update  -       reconcile  ok  -
+> ^          vmug2021  Service     -       21h  update  -       reconcile  ok  -
+>
+> Op:      0 create, 0 delete, 2 update, 0 noop
+> Wait to: 2 reconcile, 0 delete, 0 noop
+>
+> Continue? [yN]:
+> ```
 
 Update it with `y`
 
@@ -708,8 +697,6 @@ Update it with `y`
 > Succeeded
 > ```
 
-
-
 ### ytt - Overlay
 
 Sometimes it makes more sense to patch some YAML rather than template it.
@@ -722,18 +709,18 @@ For example, when:
 
 In our example we will update the `replicas` of our Deployment.
 
-```
-ytt -f 03/
+```bash
+ytt -f 04/
 ```
 
-```yaml
-. . .
-          value: captain_kube
-  replicas: 2
----
-apiVersion: v1
-. . .
-```
+> ```yaml
+> . . .
+>           value: captain_kube
+>   replicas: 2
+> ---
+> apiVersion: v1
+> . . .
+> ```
 
 You will see the value of `replicas` set to `2`.
 
@@ -790,10 +777,6 @@ Extremely powerful and simple to be used.
 
 Build an `OCI` container can be done using `docker`. Carvel introduce the possibility to building images from source code using `kbld`
 
-
-
-
-
 we have the same file created above, we just added a file `build.yaml`
 
 ```bash
@@ -812,43 +795,7 @@ cat 05/build.yaml
 kapp deploy -a vmug-application -c -f <(ytt -f 05/ | kbld -f-)
 ```
 
-> ```
-> Target cluster 'https://10.10.180.21:6443' (nodes: master01, 4+)
-> resolve | final: r.deso.tech/whoami/whoami:latest -> r.deso.tech/whoami/whoami@sha256:bc210554e9eae95d75f08cc498a8618dc083f89a6a81744bfc3380f8023403c4
->
-> @@ update deployment/vmug2021 (apps/v1) namespace: vmug2021 @@
->   ...
->   4,  4       deployment.kubernetes.io/revision: "3"
->       5 +     kbld.k14s.io/images: |
->       6 +       - origins:
->       7 +         - resolved:
->       8 +             tag: latest
->       9 +             url: r.deso.tech/whoami/whoami:latest
->      10 +         url: r.deso.tech/whoami/whoami@sha256:bc210554e9eae95d75f08cc498a8618dc083f89a6a81744bfc3380f8023403c4
->   5, 11     creationTimestamp: "2021-11-27T11:33:45Z"
->   6, 12     generation: 8
->   ...
-> 120,126             value: captain_kube
-> 121     -         image: r.deso.tech/whoami/whoami:latest
->     127 +         image: r.deso.tech/whoami/whoami@sha256:bc210554e9eae95d75f08cc498a8618dc083f89a6a81744bfc3380f8023403c4
-> 122,128           name: vmug2021
-> 123,129   status:
->
-> Changes
->
-> Namespace  Name      Kind        Conds.  Age  Op      Op st.  Wait to    Rs  Ri
-> vmug2021   vmug2021  Deployment  2/2 t   21h  update  -       reconcile  ok  -
->
-> Op:      0 create, 0 delete, 1 update, 0 noop
-> Wait to: 1 reconcile, 0 delete, 0 noop
->
-> Continue? [yN]:
-> ```
-
-Something special will happen, the image will be updated with the updated one.
-
-The Image has built and the Image updated:
-
+The image will be built and published as a local image:
 
 > ```
 > . . .
@@ -877,7 +824,9 @@ Since we are working on a multinode kubernetes cluster, if you apply, you will o
 > kapp: Error: Stopped
 > ```
 
-We will build and upload image on remote registry:
+### Build and upload automatically
+
+We will build and upload image on remote registry.
 
 We should login on registry for push the image:
 
@@ -900,38 +849,70 @@ kapp deploy -a vmug-application -c -f <(ytt -f 06/ -v push_images_repo=r.deso.te
 
 Now the image is correctly tagged:
 
-```
-. . .
-120,129             value: captain_kube
-121     -         image: r.deso.tech/whoami/whoami:latest
-    130 +         image: r.deso.tech/vmug2021/vmug-application@sha256:84bc6be5c4eb64733e9c960155dfd8ad6779f36a72cdfc29b1de446151ee2d75
-. . .
-Changes
-
-Namespace  Name      Kind        Conds.  Age  Op      Op st.  Wait to    Rs  Ri
-vmug2021   vmug2021  Deployment  2/2 t   22h  update  -       reconcile  ok  -
-
-Op:      0 create, 0 delete, 1 update, 0 noop
-Wait to: 1 reconcile, 0 delete, 0 noop
-
-Continue? [yN]:
-```
+> ```
+> . . .
+> 120,129             value: captain_kube
+> 121     -         image: r.deso.tech/whoami/whoami:latest
+>     130 +         image: r.deso.tech/vmug2021/vmug-application@sha256:84bc6be5c4eb64733e9c960155dfd8ad6779f36a72cdfc29b1de446151ee2d75
+> . . .
+> Changes
+>
+> Namespace  Name      Kind        Conds.  Age  Op      Op st.  Wait to    Rs  Ri
+> vmug2021   vmug2021  Deployment  2/2 t   22h  update  -       reconcile  ok  -
+>
+> Op:      0 create, 0 delete, 1 update, 0 noop
+> Wait to: 1 reconcile, 0 delete, 0 noop
+>
+> Continue? [yN]:
+> ```
 
 You can insert `y` and press `Enter`
 
-```
-. . .
-10:53:21AM: ---- applying complete [1/1 done] ----
-10:53:21AM: ---- waiting complete [1/1 done] ----
-
-Succeeded
-```
+> ```
+> . . .
+> 10:53:21AM: ---- applying complete [1/1 done] ----
+> 10:53:21AM: ---- waiting complete [1/1 done] ----
+>
+> Succeeded
+> ```
 
 Open your application
 
 ```
 curl http://vmug2021.vmug2021.svc.cluster.local
 ```
+
+### Update the code and build again
+
+
+```
+vi ~/carvel/app.py
+```
+
+As the following file:
+
+```python
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Thank for supporting us'
+```
+
+Build, upload and apply again:
+
+```bash
+kapp deploy -a vmug-application -c -f <(ytt -f 06/ -v push_images_repo=r.deso.tech/vmug2021/vmug-application | kbld -f-)
+```
+
+```
+curl http://vmug2021.vmug2021.svc.cluster.local
+```
+
+> ```
+> Thank for supporting us
+> ```
 
 ### Remove application
 
@@ -946,27 +927,24 @@ kapp delete -a vmug-application
 >
 > Changes
 >
-> Namespace  Name                       Kind           Conds.  Age  Op      Op st.  Wait to  Rs  Ri
-> (cluster)  vmug2021                   Namespace      -       22h  delete  -       delete   ok  -
-> vmug2021   test                       Endpoints      -       5m   -       -       delete   ok  -
-> ^          test                       Service        -       5m   -       -       delete   ok  -
-> ^          test-5ld7w                 EndpointSlice  -       5m   -       -       delete   ok  -
-> ^          vmug2021                   Deployment     2/2 t   22h  delete  -       delete   ok  -
-> ^          vmug2021                   Endpoints      -       22h  -       -       delete   ok  -
-> ^          vmug2021                   Service        -       22h  delete  -       delete   ok  -
-> ^          vmug2021-58f64df977        ReplicaSet     -       54m  -       -       delete   ok  -
-> ^          vmug2021-644c5cf6f6        ReplicaSet     -       2m   -       -       delete   ok  -
-> ^          vmug2021-644c5cf6f6-dq47h  Pod            4/4 t   2m   -       -       delete   ok  -
-> ^          vmug2021-644c5cf6f6-x89jv  Pod            4/4 t   2m   -       -       delete   ok  -
-> ^          vmug2021-6ff748c68d        ReplicaSet     -       1h   -       -       delete   ok  -
-> ^          vmug2021-7564b87db         ReplicaSet     -       16m  -       -       delete   ok  -
-> ^          vmug2021-7f5d8dd7dc        ReplicaSet     -       21h  -       -       delete   ok  -
-> ^          vmug2021-845db75bb         ReplicaSet     -       22h  -       -       delete   ok  -
-> ^          vmug2021-bb69c9c97         ReplicaSet     -       27m  -       -       delete   ok  -
-> ^          vmug2021-pfzq7             EndpointSlice  -       22h  -       -       delete   ok  -
+> Namespace  Name                       Kind           Conds.  Age  Op      Op st.  Wait to  Rs       Ri
+> (cluster)  vmug2021                   Namespace      -       12m  delete  -       delete   ok       -
+> vmug2021   vmug2021                   Deployment     2/2 t   12m  delete  -       delete   ok       -
+> ^          vmug2021                   Endpoints      -       12m  -       -       delete   ok       -
+> ^          vmug2021                   Service        -       12m  delete  -       delete   ok       -
+> ^          vmug2021-55c8495b65        ReplicaSet     -       7m   -       -       delete   ok       -
+> ^          vmug2021-5b85476c54        ReplicaSet     -       8m   -       -       delete   ok       -
+> ^          vmug2021-5cff89ff85        ReplicaSet     -       12m  -       -       delete   ok       -
+> ^          vmug2021-6c8c698876        ReplicaSet     -       34s  -       -       delete   ok       -
+> ^          vmug2021-6c8c698876-5db4m  Pod            4/4 t   31s  -       -       delete   ok       -
+> ^          vmug2021-6c8c698876-jqqqr  Pod            4/4 t   34s  -       -       delete   ok       -
+> ^          vmug2021-776f6b9dd7        ReplicaSet     -       3m   -       -       delete   ok       -
+> ^          vmug2021-776f6b9dd7-5jcv9  Pod            4/4 t   3m   -       -       delete   ongoing  Deleting
+> ^          vmug2021-776f6b9dd7-jtwg6  Pod            4/4 t   3m   -       -       delete   ongoing  Deleting
+> ^          vmug2021-znm7w             EndpointSlice  -       12m  -       -       delete   ok       -
 >
-> Op:      0 create, 3 delete, 0 update, 14 noop
-> Wait to: 0 reconcile, 17 delete, 0 noop
+> Op:      0 create, 3 delete, 0 update, 11 noop
+> Wait to: 0 reconcile, 14 delete, 0 noop
 >
 > Continue? [yN]:
 > ```
@@ -978,21 +956,25 @@ You can kill the process `kwt` with `CTRL-C`
 sudo pkill -SIGINT kwt
 ```
 
-```
-01:16:40PM: info: StartOptions: Shutting down
+> ```
+> 01:16:40PM: info: StartOptions: Shutting down
+>
+> Succeeded
+> ```
 
-Succeeded
-```
 
 ```
 kubectl get pod
 ```
+
+You still to see the kwt pod.
 
 > ```
 > NAME      READY   STATUS    RESTARTS   AGE
 > kwt-net   1/1     Running   0          8s
 > ```
 
+We will cleanup it
 
 ```
 sudo -E kwt net clean-up
@@ -1006,6 +988,17 @@ sudo -E kwt net clean-up
 kubectl get pod
 ```
 
+No more pods there
+
 > ```
 > No resources found in default namespace.
 > ```
+
+### Join the Community and Make Carvel Better
+
+Carvel is better because of our contributors and maintainers. It is because of you that we can bring great software to the community.
+Please join us during our online community meetings. Details can be found on our [Carvel website](https://carvel.dev/community/).
+
+You can chat with us on Kubernetes Slack in the #carvel channel and follow us on Twitter at @carvel_dev.
+
+Check out which organizations are using and contributing to Carvel: [Adopter's list](https://github.com/vmware-tanzu/carvel/blob/master/ADOPTERS.md)
