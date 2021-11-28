@@ -661,8 +661,12 @@ This tools can be used together for change and apply configuration directly on k
 kapp deploy -a vmug-application -c -f <(ytt -f 03/)
 ```
 
+I'm applying the modified configuration.
 
+```
+. . .
 
+```
 
 
 

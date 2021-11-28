@@ -1,7 +1,7 @@
 #@ load("@ytt:data", "data")
 
 #@ def vmuglabels():
-app: "vmug-application"
+app: "vmug2021"
 #@ end
 
 ---
@@ -9,7 +9,7 @@ apiVersion: v1
 kind: Service
 metadata:
   namespace: vmug2021
-  name: vmug-application
+  name: vmug2021
 spec:
   ports:
   - port: #@ data.values.svc_port
@@ -20,7 +20,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: vmug2021
-  name: vmug-application
+  name: vmug2021
 spec:
   selector:
     matchlabels: #@ vmuglabels()
@@ -29,7 +29,7 @@ spec:
       labels: #@ vmuglabels()
     spec:
       containers:
-      - name: vmug-application
+      - name: vmug2021
         image: r.deso.tech/whoami/whoami:latest
         env:
         - name: APPLICATION_NAME
