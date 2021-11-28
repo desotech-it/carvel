@@ -896,10 +896,43 @@ docker login -u vmug2021 r.deso.tech
 > ```
 
 ```bash
-kapp deploy -a vmug-application -c -f <(ytt -f 05/ -v push_images_repo=r.deso.tech/vmug2021/vmug-application | kbld -f-)
+kapp deploy -a vmug-application -c -f <(ytt -f 06/ -v push_images_repo=r.deso.tech/vmug2021/vmug-application | kbld -f-)
 ```
 
+Now the image is correctly tagged:
 
+```
+. . .
+120,129             value: captain_kube
+121     -         image: r.deso.tech/whoami/whoami:latest
+    130 +         image: r.deso.tech/vmug2021/vmug-application@sha256:84bc6be5c4eb64733e9c960155dfd8ad6779f36a72cdfc29b1de446151ee2d75
+. . .
+Changes
+
+Namespace  Name      Kind        Conds.  Age  Op      Op st.  Wait to    Rs  Ri
+vmug2021   vmug2021  Deployment  2/2 t   22h  update  -       reconcile  ok  -
+
+Op:      0 create, 0 delete, 1 update, 0 noop
+Wait to: 1 reconcile, 0 delete, 0 noop
+
+Continue? [yN]:
+```
+
+You can insert `y` and press `Enter`
+
+```
+. . .
+10:53:21AM: ---- applying complete [1/1 done] ----
+10:53:21AM: ---- waiting complete [1/1 done] ----
+
+Succeeded
+```
+
+Open your application
+
+```
+curl http://vmug2021.vmug2021.svc.cluster.local
+```
 
 ## Remove kwt
 You can kill the process `kwt` with `CTRL-C`
@@ -907,7 +940,6 @@ You can kill the process `kwt` with `CTRL-C`
 ```
 sudo pkill -SIGINT kwt
 ```
-
 
 ```
 01:16:40PM: info: StartOptions: Shutting down
