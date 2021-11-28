@@ -517,13 +517,112 @@ Write and confirm with `y` to apply the updated application:
 
 ## ytt
 
-### Templating in yaml file.
+### Data Values
 
 Generally the file yaml used for deploy application are almost the same. Working with template can help us to write less and reuse the same files for multiple deployments.
 
+In ytt exist the concept of Data values
+
+Data values provide a way to inject input data into a template. If you think about a `ytt` template as a function, then `data values` are the varying parameters.
+
+```
+cd ~/carvel/
+```
+
+We start from a file with some
+
+
+```
+cat 03/whoami-app.yaml
+```
+
+```yaml
+#@ load("@ytt:data", "data")
+
+#@ def vmug-labels():
+app: "vmug-application"
+#@ end
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: vmug2021
+  name: vmug-application
+spec:
+  ports:
+  - port: #@ data.values.svc_port
+    targetPort: #@ data.values.app_port
+  selector: #@ vmug-labels()
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: vmug2021
+  name: vmug-application
+spec:
+  selector:
+    matchvmug-labels: #@ vmug-labels()
+  template:
+    metadata:
+      vmug-labels: #@ vmug-labels()
+    spec:
+      containers:
+      - name: vmug-application
+        image: r.deso.tech/whoami/whoami:latest
+        env:
+        - name: APPLICATION_NAME
+          value: #@ data.values.application_name
+```
+
+In the first row of the file we are going to referencing a `data values` loading a `@ytt:data` module.
+
+In the file you will see the referecing of variable using `#@ data.values.`.
+For example for change the `application_name`, in the last row we reference to `#@ data.values.application_name`
 
 
 
+
+```
+ytt -f 03/
+```
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: vmug2021
+  name: vmug-application
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: vmug-application
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: vmug2021
+  name: vmug-application
+spec:
+  selector:
+    matchvmug-labels:
+      app: vmug-application
+  template:
+    metadata:
+      vmug-labels:
+        app: vmug-application
+    spec:
+      containers:
+      - name: vmug-application
+        image: r.deso.tech/whoami/whoami:latest
+        env:
+        - name: APPLICATION_NAME
+          value: captain_kube
+```
+
+You can see the file with the
 
 
 
