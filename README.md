@@ -183,8 +183,8 @@ kapp inspect -a vmug-application --tree
 > Succeeded
 > ```
 
-As you can see Cluster created some extra kind: `Endpoints`, `EndpointSlice`, `ReplicaSet` and `Pod`. `kapp` track all object created.
-
+As you can see Cluster created some extra kind: `Endpoints`, `EndpointSlice`, `ReplicaSet` and `Pod`.
+`kapp` tracks all objects that have been created.
 
 ```bash
 kapp ls
@@ -206,12 +206,11 @@ kapp ls
 > Succeeded
 > ```
 
-You can read logs of the container with a simple command:
+You can read the logs from the containers with a simple command:
 
 ```bash
 kapp logs -f -a vmug-application
 ```
-
 
 > ```
 > Target cluster 'https://10.10.180.21:6443' (nodes: master01, 4+)
@@ -223,14 +222,13 @@ kapp logs -f -a vmug-application
 
 Stop the process with `CTRL-C`
 
-
 > ```
 > ^C
 > ```
 
 ## Working with a web application
 
-When a developer wants to interact from his computer with the application, he use the `kubectl port-forward` command that permit to forward a kubernetes internal service port to the local computer port.
+When a developer wants to interact from his computer with the application, they could use the `kubectl port-forward` command to forward a Kubernetes internal service's port to a local computer's port.
 
 ```bash
 kubectl port-forward -n vmug2021 svc/vmug2021 8080:80
@@ -240,13 +238,13 @@ kubectl port-forward -n vmug2021 svc/vmug2021 8080:80
 > Forwarding from 127.0.0.1:8080 -> 80
 > ```
 
-Open another terminal or browser and `curl` on `localhost` on the port `8080` to:
+Open another terminal or browser and `curl` `localhost` on port `8080`:
 
 ```bash
 curl localhost:8080
 ```
 
-> ```bash
+> ```
 > @@@@@@@@@@@LtC@@@@@0tf8@@@@@@@@@@@@@@@@@@@@@@
 > @@@@@@@88@0ii;G@8@0i;;C@@@@@@@@@@@@@@@@@@@@@@
 > @@@@@8LLfLCtfLLLLfffftCGCLL0@@@@@@@@@@@@@@@@@
@@ -303,22 +301,22 @@ curl localhost:8080
 > curl: (52) Empty reply from server
 > ```
 
-You need to restart again the `kubectl port-forward` command.
+You need to restart the `kubectl port-forward` command.
 
-Kill the `kubectl port-forward` cli with `CTRL-C`
+Kill the `kubectl port-forward` command with `CTRL-C`
 
 > ```
-> ^C%
+> ^C
 > ```
 
-In this case you can use another tools of the suite Carvel.
+In this case you can use another tool from the Carvel suite: `kwt`.
 
 ## kwt
 
-[`kwt`](https://github.com/vmware-tanzu/carvel-kwt) come to help developer to provide a set of command for develop application with Kubernetes.
-This tools permit to interact with Network to make Kubernetes services and pods accessible to your local machine.
+[`kwt`](https://github.com/vmware-tanzu/carvel-kwt) helps developers provide a set of commands for developing applications with Kubernetes.
+This tool allows to interact with the overlay network and make Kubernetes services and pods accessible to your local machine.
 
-We have a `ClusterIP` service `vmug2021`:
+We have a `ClusterIP` service named `vmug2021`:
 
 ```bash
 kubectl get svc vmug2021 -n vmug2021
@@ -329,16 +327,15 @@ kubectl get svc vmug2021 -n vmug2021
 > vmug2021   ClusterIP   10.98.216.211   <none>        80/TCP    7m52s
 > ```
 
-You don't have any record in your dns resolution:
+Right now you don't have any record in your local DNS server - the one your local machine is using:
 
 ```bash
 dig vmug2021.vmug2021.svc.cluster.local +short
 ```
 
-You will not receive any output because this record dns do not exist in our environment.
+You will not receive any output because this DNS record does not exist for you locally.
 
-
-Try to run `kwt` with a simple command:
+Try to run `kwt` with this simple command:
 
 ```bash
 sudo -E kwt net start
@@ -353,6 +350,8 @@ sudo -E kwt net start
 > 11:46:56AM: info: dns.DomainsMux: Registering cluster.local.->kube-dns
 > ```
 
+Try to resolve the service now.
+
 ```bash
 dig vmug2021.vmug2021.svc.cluster.local +short
 ```
@@ -363,13 +362,13 @@ You will obtain the same IP of ClusterIP `vmug2021`
 > 10.98.216.211
 > ```
 
-Now you have correct resolution, running `curl` you will obtain output from pod:
+Now you can resolve the service name, running `curl` you will obtain the output from the pods:
 
 ```bash
 curl http://vmug2021.vmug2021.svc.cluster.local
 ```
 
-You can see the output of your container:
+You can see the output from your container:
 
 > ```
 > @@@@@@@@@@@LtC@@@@@0tf8@@@@@@@@@@@@@@@@@@@@@@
@@ -418,7 +417,7 @@ kubectl delete pod -n vmug2021 -l app=vmug2021 --grace-period 0
 > pod "vmug2021-845db75bb-44r7q" deleted
 > ```
 
-Doing `curl` again you will obtain result without restart the command `kwt`.
+Running `curl` again will now work, without restarting the `kwt` command.
 
 ```bash
 curl http://vmug2021.vmug2021.svc.cluster.local
@@ -426,7 +425,7 @@ curl http://vmug2021.vmug2021.svc.cluster.local
 
 ## kapp updates
 
-You can also update application using kapp.
+You can also update the application using `kapp`.
 
 ```bash
 cd ~/carvel/
@@ -440,7 +439,7 @@ diff 01/whoami-app.yaml 02/whoami-app.yaml
 >>           value: captainkube
 >```
 
-In this file we only changed the value of Environment Variable `NAME_APPLICATION`
+In this file we only changed the value of the `NAME_APPLICATION` environment variable.
 
 
 ```bash
@@ -453,7 +452,7 @@ cat 02/whoami-app.yaml | grep NAME -a1
 >           value: captainkube
 > ```
 
-Check the changes with `kapp`
+Check the changes with `kapp`.
 
 ```bash
 kapp deploy -a vmug-application -f 02/whoami-app.yaml --diff-changes
@@ -503,13 +502,13 @@ Write and confirm with `y` to apply the updated application:
 > ```
 
 
-Curl again
+Now run `curl` again.
 
 ```bash
 curl http://vmug2021.vmug2021.svc.cluster.local
 ```
 
-> ```bash
+> ```
 > @@@@@@@@@@@@@@@@@@@0GGG08@@@@@@@@@@@@@@@@@@@@
 > @@@@@@@@@@@@@@@@G1:.   .,;L@@@@@@@@@@@@@@@@@@
 > @@@@@@@@@@@@@@@L. . :t1... ;@@@@@@@@@@@@@@@@@
@@ -541,18 +540,21 @@ curl http://vmug2021.vmug2021.svc.cluster.local
 
 ### ytt - Data Values
 
-Generally the file yaml used for deploy application are almost the same. Working with template can help us to write less and reuse the same files for multiple deployments.
+Generally the YAML file used for deploying applications are almost the same.
 
-In ytt exist the concept of Data values
+Working with templates can help us write less and reuse the same files for multiple deployments.
 
-Data values provide a way to inject input data into a template. If you think about a `ytt` template as a function, then `data values` are the varying parameters.
+In `ytt` there exists the concept of `data` values.
+
+`data` values provide a way to inject input data into a template.
+
+If you think of a `ytt` template as a function, then `data` values are its various parameters.
 
 ```bash
 cd ~/carvel/
 ```
 
-We start from a file with some
-
+We'll start from a file with the following contents.
 
 ```bash
 cat 03/whoami-app.yaml
@@ -597,17 +599,19 @@ cat 03/whoami-app.yaml
 >           value: #@ data.values.application_name
 > ```
 
-In the first row of the file we are going to referencing a `data values` loading a `@ytt:data` module.
+In the first row of the file we are going to referencing a `data` values loading a `@ytt:data` module.
 
-In the file you will see the referecing of variable using `#@ data.values.`.
-For example for change the `application_name`, in the last row we reference to `#@ data.values.application_name`
+In the file you will see we're referecing our variable using `#@ data.values.`.
+For example, to change the `application_name`, in the last line we reference `#@ data.values.application_name`.
 
-The `#@ def vmug-labels():` is a type of value that is defined directly in YAML. This parameter is called YAMLFragment and return just the content values. For example in our case will return label: `app: "vmug-application"` in:
+The `#@ def vmug-labels():` is a type of value that is defined directly in YAML. This parameter is called YAMLFragment and returns just the content values.
+For example in our case will return label: `app: "vmug-application"` in:
+
 - `matchlabels: #@ vmuglabels()`
 - `labels: #@ vmuglabels()`
 - `selector: #@ vmuglabels()`
 
-The file values.yaml contain the values of the variables specified above.
+The `values.yaml` file contains the values of the variables specified above.
 
 ```bash
 cat 03/values.yaml
@@ -621,7 +625,7 @@ app_port: 80
 application_name: captainkube
 ```
 
-Try to run `ytt` for understand the final result
+Try to run `ytt` to understand the final result.
 
 ```bash
 ytt -f 03/
@@ -662,7 +666,7 @@ ytt -f 03/
 >           value: captainkube
 > ```
 
-We can also overwrite information overwriting the information of the `values.yaml`:
+We can also override specific variables from the `values.yaml` file:
 
 ```bash
 ytt -f 03/ -v application_name=goldie
@@ -675,22 +679,21 @@ ytt -f 03/ -v application_name=goldie
 >           value: goldie
 > ```
 
-Apply the configuration with goldie:
+Apply the configuration with `goldie`:
 
 ```bash
 kapp deploy -a vmug-application -c -f <(ytt -f 03/ -v application_name=goldie)
 ```
 
-Curl again
+Run `curl` again.
 
 ```bash
 curl http://vmug2021.vmug2021.svc.cluster.local
 ```
 
-
 ### Use kapp together with ytt
 
-This tools can be used together for change and apply configuration directly on kubernetes.
+`kapp` and `ytt` can be used together to change and apply configurations directly to Kubernetes.
 
 ```bash
 kapp deploy -a vmug-application -c -f <(ytt -f 03/)
@@ -771,7 +774,6 @@ ytt -f 04/
 
 You will see the value of `replicas` set to `2`.
 
-
 ```bash
 kapp deploy -a vmug-application -c -f <(ytt -f 04/)
 ```
@@ -818,13 +820,15 @@ Apply it.
 > Succeeded
 > ```
 
-Extremely powerful and simple to be used.
+Extremely powerful and simple to use.
 
 ## kbld
 
-Build an `OCI` container can be done using `docker`. Carvel introduce the possibility to building images from source code using `kbld`
+Build an `OCI` container can be done using `docker`.
 
-we have the same file created above, we just added a file `build.yaml`
+Carvel introduces the possibility of building images from source code using `kbld`.
+
+We have the same file created above, we just added a file `build.yaml`.
 
 ```bash
 cat 05/build.yaml
@@ -865,7 +869,7 @@ The image will be built and published as a local image:
 > Continue? [yN]: N
 > ```
 
-Since we are working on a multinode kubernetes cluster, if you apply, you will obtain error because the image is locally, so please press `Enter` or `N`
+Since we are working on a multinode kubernetes cluster, if you apply, you will obtain error because the image is only local, so please press `Enter` or `N`.
 
 > ```
 > kapp: Error: Stopped
@@ -875,7 +879,7 @@ Since we are working on a multinode kubernetes cluster, if you apply, you will o
 
 We will build and upload image on remote registry.
 
-We should login on registry for push the image:
+We should login to a registry in order to push the image:
 
 ```bash
 docker login -u vmug2021 r.deso.tech
@@ -913,7 +917,7 @@ Now the image is correctly tagged:
 > Continue? [yN]:
 > ```
 
-You can insert `y` and press `Enter`
+You can type in `y` and press `Enter` now.
 
 > ```
 > . . .
@@ -923,14 +927,13 @@ You can insert `y` and press `Enter`
 > Succeeded
 > ```
 
-Open your application
+Open your application.
 
 ```bash
 curl http://vmug2021.vmug2021.svc.cluster.local
 ```
 
 ### Update the code and build again
-
 
 ```bash
 vi ~/carvel/app.py
@@ -953,7 +956,7 @@ Build, upload and apply again:
 kapp deploy -a vmug-application -c -f <(ytt -f 06/ -v push_images_repo=r.deso.tech/vmug2021/vmug-application | kbld -f-)
 ```
 
-Curl the new application created
+`curl` the newly-created application.
 
 ```bash
 curl http://vmug2021.vmug2021.svc.cluster.local
@@ -965,7 +968,7 @@ curl http://vmug2021.vmug2021.svc.cluster.local
 
 ### Remove application
 
-With `kapp` you can remove application and clean your kubernetes environment.
+With `kapp` you can also remove the application and clean up your Kubernetes environment.
 
 ```bash
 kapp delete -a vmug-application
@@ -999,7 +1002,7 @@ kapp delete -a vmug-application
 > ```
 
 ## Remove kwt
-You can kill the process `kwt` with `CTRL-C`
+You can kill the `kwt` process with `CTRL-C`.
 
 ```bash
 sudo pkill -SIGINT kwt
@@ -1013,7 +1016,7 @@ sudo pkill -SIGINT kwt
 
 
 ```bash
-kubectl get pod
+kubectl get pods
 ```
 
 You still to see the kwt pod.
@@ -1023,7 +1026,7 @@ You still to see the kwt pod.
 > kwt-net   1/1     Running   0          8s
 > ```
 
-We will cleanup it
+We will clean it up.
 
 ```bash
 sudo -E kwt net clean-up
@@ -1034,10 +1037,10 @@ sudo -E kwt net clean-up
 > ```
 
 ```bash
-kubectl get pod
+kubectl get pods
 ```
 
-No more pods there
+No more pods there.
 
 > ```
 > No resources found in default namespace.
@@ -1048,6 +1051,6 @@ No more pods there
 Carvel is better because of our contributors and maintainers. It is because of you that we can bring great software to the community.
 Please join us during our online community meetings. Details can be found on our [Carvel website](https://carvel.dev/community/).
 
-You can chat with us on Kubernetes Slack in the #carvel channel and follow us on Twitter at @carvel_dev.
+You can chat with us on Kubernetes Slack in the `#carvel` channel and follow us on Twitter at [@carvel_dev](https://twitter.com/carvel_dev).
 
-Check out which organizations are using and contributing to Carvel: [Adopter's list](https://github.com/vmware-tanzu/carvel/blob/master/ADOPTERS.md)
+Check out which organizations are using and contributing to Carvel: [Adopter's list](https://github.com/vmware-tanzu/carvel/blob/master/ADOPTERS.md).
