@@ -1,9 +1,9 @@
 # CARVEL.dev
 CARVEL.dev for VMUG 2021
 
-In this example you can understand how to use a full integration of CARVEL Tools.
+In this example you can understand how to use a full integration with CARVEL Tools.
 
-We should install Carvel Tools.
+We will install the Carvel Tools first.
 
 ```bash
 sudo -i
@@ -20,37 +20,37 @@ exit
 ## kapp
 ### Deploy an application with `kubectl`
 
-Using a Deployment kind of Kubernetes we can deploy a GOlang application.
+Using a Kubernetes Deployment we can deploy a Golang application.
 
-`whoami` permit to obtain information about container and also can perform some task for stress cpu, memory and so on.
+`whoami` allows to obtain information about containers and also can perform stress tests on CPU and memory.
 
-Find Detail around this project on GitHub Project [https://github.com/desotech-it/whoami](https://github.com/desotech-it/whoami)
+You can learn more about `whoami` on its GitHub page [https://github.com/desotech-it/whoami](https://github.com/desotech-it/whoami).
 
-When passing an environment variable to the container `whoami` we can obtain different landing page.
+When passing an environment variable to the container `whoami` we can obtain a different landing page.
 
-Sync Repo for this workshop:
+Clone the repo for this workshop:
 
 ```bash
-cd ~
-
-git clone https://github.com/desotech-it/carvel.git
-
+cd ~ &&
+git clone https://github.com/desotech-it/carvel.git &&
 cd carvel
 ```
 
-Understand the yaml file:
+Understand the YAML file:
 
 ```bash
 cat 01/whoami-app.yaml
 ```
 
-Usually a Kubernetes Developer deploy an application using `kubectl` command:
+Usually a Kubernetes developer deploys an application using the `kubectl` command:
 
 ```bash
 kubectl apply -n vmug2021 -f 01/whoami-app.yaml
 ```
 
-This command could produce an error, because in the yaml file the creation of `namespace` is located on the bottom of the file.
+This command would produce an error because in the YAML file the creation of the `namespace` is located at the bottom of the file.
+`kubectl` is not able to figure out the dependencies between resources declared in a YAML file.
+It just tries to blindly create them in the same order as they are declared in the YAML file.
 
 > ```
 > namespace/vmug2021 created
@@ -58,13 +58,13 @@ This command could produce an error, because in the yaml file the creation of `n
 > Error from server (NotFound): error when creating "01/whoami-app.yaml": namespaces "vmug2021" not found
 > ```
 
-Running again the same command:
+Running the same command again would actually work as the namespace has now been created:
 
 ```bash
 kubectl apply -n vmug2021 -f 01/whoami-app.yaml
 ```
 
-Now also created the deployment and service:
+Now you can also create the deployment and the service:
 
 > ```
 > deployment.apps/vmug2021 created
@@ -72,7 +72,7 @@ Now also created the deployment and service:
 > namespace/vmug2021 unchanged
 > ```
 
-Also create some other object.
+Notice how `kubectl` also created some other objects, related to the objects we just created.
 
 ```bash
 kubectl get endpoints -n vmug2021 vmug2021
@@ -83,9 +83,9 @@ kubectl get endpoints -n vmug2021 vmug2021
 > vmug2021   10.1.0.90:80   2m21s
 > ```
 
-We did't create endpoint directly. Usually, when we works with custom CRD, we need a software that permit us to control what should be installed.
+We did't create the endpoint directly. Usually, when we work with custom CRDs, we need a software that allows us to control what should be installed.
 
-Now delete this application.
+Now you can delete this application.
 
 ```bash
 kubectl delete -f 01/whoami-app.yaml
@@ -99,7 +99,7 @@ kubectl delete -f 01/whoami-app.yaml
 
 ### Deploy Application with `kapp`
 
-We try to use a different command `kapp` for deploy the same application:
+We try to use a different command `kapp` to deploy the same application:
 
 ```bash
 kapp deploy -a vmug-application -f 01/whoami-app.yaml
@@ -121,7 +121,8 @@ kapp deploy -a vmug-application -f 01/whoami-app.yaml
 > Continue? [yN]:
 > ```
 
-When you run application you will see result of what will happen inside your kubernetes cluster. You will not receive any error and all sorting and dependencies have been calculated by `kapp`
+When you run the application you will see what exactly will happen inside your Kubernetes cluster.
+You will not receive any errors and dependencies will have been calculated by `kapp`.
 
 You can accept with `y`:
 
@@ -153,7 +154,8 @@ You can accept with `y`:
 > Succeeded
 > ```
 
-You will obtain a `reconcile` information about all objects created. Using kapp you observe what happen and understand if the operation will be completed correctly.
+You will obtain a `reconcile` information about all objects created.
+Using kapp you can observe what happened and understand if the operation completed correctly.
 
 ```bash
 kapp inspect -a vmug-application --tree
